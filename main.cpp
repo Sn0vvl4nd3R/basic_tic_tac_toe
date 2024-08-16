@@ -30,57 +30,33 @@ void draw_field(){
 }
 
 bool check_vertical(char current_player){
-    bool result;
-
     for (int i = 0; i != 3; i++){
-        if (field[i] == field[i + 3] == field[i + 6] == current_player){
-            result = true;
-            break;
-        } else {
-            result = false;
-        }
+        if (field[i] == current_player && field[i + 3] == current_player && field[i + 6] == current_player)
+            return true;
     }
 
-    return result;
+    return false;
 }
 
 bool check_horizontal(char current_player){
-    bool result;
-
     for (int i = 0; i < 9; i = i + 3){
-        if (field[i] == field[i + 1] == field[i + 2] == current_player){
-            result = true;
-            break;
-        } else {
-            result = false;
-        }
+        if (field[i] == current_player && field[i + 1] == current_player && field[i + 2] == current_player)
+            return true;
     }
 
-    return result;
+    return false;
 }
 
 bool check_diagonal(char current_player){
-    bool result;
+    if ((field[0] == current_player && field[4] == current_player && field[8] == current_player) ||
+    (field[2] == current_player && field[4] == current_player && field[6] == current_player))
+        return true;
 
-    if (field[0] == field[4] == field[8] == current_player)
-        result = true;
-    else if (field[2] == field[4] == field[6] == current_player)
-        result = true;
-    else
-        result = false;
-
-    return result;
+    return false;
 }
 
 bool check_victory(char current_player){
-    bool vertical = check_vertical(current_player);
-    bool horizontal = check_horizontal(current_player);
-    bool diagonal = check_diagonal(current_player);
-
-    if (vertical || horizontal || diagonal)
-        return true;
-    else
-        return false;
+    return check_vertical(current_player) || check_horizontal(current_player) || check_diagonal(current_player);
 }
 
 bool move(char current_player){
@@ -90,16 +66,19 @@ bool move(char current_player){
         std::cout << current_player << " : " << "Enter your cell --> ";
         std::cin >> cell;
 
-        if (check_victory(current_player)){
-            std::cout << current_player << " have won!" << std::endl;
-            return true;
-        } else if (field[cell - 1] == 'O' || field[cell - 1] == 'X')
-            std::cout << "You cannot do that! This cell is occupied already!" << std::endl;
-        else if (cell > 9)
+        if (cell > 9 || cell < 1){
             std::cout << "You cannot select a cell which is beyond the field!" << std::endl;
-        else {
+        } else if (field[cell -1] == 'O' || field[cell - 1] == 'X'){
+            std::cout << "You cannot do that! This cell is occupied already!" << std::endl;
+        } else {
             field[cell - 1] = current_player;
             draw_field();
+
+            if (check_victory(current_player)){
+                std::cout << current_player << " has won!" << std::endl;
+                return true;
+            }
+
             return false;
         }
     }
@@ -115,10 +94,3 @@ void game_loop(){
             break;
     }
 }
-
-
-
-
-
-
-

@@ -60,6 +60,17 @@ bool check_victory(char current_player){
     return check_vertical(current_player) || check_horizontal(current_player) || check_diagonal(current_player);
 }
 
+bool is_draw(){
+    for (int x = 0; x < 3; x++){
+        for (int y = 0; y < 3; y++){
+            if (field[x][y] == '.')
+                return false;
+        }
+    }
+
+    return true;
+}
+
 bool move(char current_player){
     cell input;
 
@@ -100,8 +111,11 @@ void game_loop(){
     while (true){
         if (move(current_player))
             break;
+        if (is_draw()){
+            std::cout << "It's a draw!" << std::endl;
+            break;
+        }
         std::cout << std::endl;
-
         current_player == 'X' ? current_player = 'O' : current_player = 'X';
     }
 }

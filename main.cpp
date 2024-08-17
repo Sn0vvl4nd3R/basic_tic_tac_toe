@@ -3,6 +3,12 @@
 
 #define SIZE 3
 
+enum Player {
+    NONE = '.',
+    PLAYER_X = 'X',
+    PLAYER_O = 'O'
+};
+
 char field[SIZE][SIZE];
 
 struct cell {
@@ -12,22 +18,20 @@ struct cell {
 void game_loop();
 
 int main(void){
-
     game_loop();
-
     return 0;
 }
 
 void fill_field(){
     for (int x = 0; x < SIZE; x++)
         for (int y = 0; y < SIZE; y++)
-            field[x][y] = '.';
+            field[x][y] = NONE;
 }
 
 void draw_field(){
     for (int i = 0; i < SIZE; i++){
         for (int j = 0; j < SIZE; j++){
-            std::cout << field[i][j];
+            std::cout << static_cast<char>(field[i][j]);
             if (j < SIZE - 1) std::cout << " | ";
         }
         std::cout << std::endl;
@@ -35,25 +39,25 @@ void draw_field(){
     }
 }
 
-bool check_vertical(char current_player){
-    for (int x = 0; x < SIZE; x++){
-        if (field[x][0] == current_player && field[x][1] == current_player && field[x][2] == current_player)
-            return true;
-    }
-
-    return false;
-}
-
-bool check_horizontal(char current_player){
+bool check_vertical(Player current_player){
     for (int y = 0; y < SIZE; y++){
-        if (field[0][y] == current_player && field[1][y] == current_player && field[2][y] == current_player)
+        if (field[y][0] == current_player && field[y][1] == current_player && field[y][2] == current_player)
             return true;
     }
 
     return false;
 }
 
-bool check_diagonal(char current_player){
+bool check_horizontal(Player current_player){
+    for (int x = 0; x < SIZE; x++){
+        if (field[0][x] == current_player && field[1][x] == current_player && field[2][x] == current_player)
+            return true;
+    }
+
+    return false;
+}
+
+bool check_diagonal(Player current_player){
     if ((field[0][0] == current_player && field[1][1] == current_player && field[2][2] == current_player) ||
         (field[2][0] == current_player && field[1][1] == current_player && field[0][2] == current_player))
         return true;
@@ -61,7 +65,7 @@ bool check_diagonal(char current_player){
     return false;
 }
 
-bool check_victory(char current_player){
+bool check_victory(Player current_player){
     return check_vertical(current_player) || check_horizontal(current_player) || check_diagonal(current_player);
 }
 
@@ -76,11 +80,11 @@ bool is_draw(){
     return true;
 }
 
-bool move(char current_player){
+bool move(Player current_player){
     cell input;
 
     while (true){
-        std::cout << current_player << " : " << "Enter your coordinates --> ";
+        std::cout << static_cast<char>(current_player) << " : " << "Enter your coordinates --> ";
         std::cin >> input.x >> input.y;
 
         if (std::cin.fail()){
@@ -92,7 +96,7 @@ bool move(char current_player){
         if (input.x > SIZE || input.x <= 0 || input.y > SIZE || input.y <= 0){
             std::cout << "You cannot select a cell which is beyond the field!" << std::endl;
             continue;
-        } else if (field[input.x - 1][input.y - 1] == 'O' || field[input.x - 1][input.y - 1] == 'X'){
+        } else if (field[input.x - 1][input.y - 1] != NONE){
             std::cout << "You cannot do that! This cell is occupied already!" << std::endl;
             continue;
         } else {
@@ -100,7 +104,7 @@ bool move(char current_player){
             draw_field();
 
             if (check_victory(current_player)){
-                std::cout << std::endl << current_player << " has won!" << std::endl;
+                std::cout << std::endl << static_cast<char>(current_player) << " has won!" << std::endl;
                 return true;
             }
 
@@ -110,11 +114,9 @@ bool move(char current_player){
 }
 
 void game_loop(){
-    char current_player;
-
+    Player current_player = PLAYER_X;
     fill_field();
 
-    current_player = 'X';
     while (true){
         if (move(current_player))
             break;
@@ -123,6 +125,6 @@ void game_loop(){
             break;
         }
         std::cout << std::endl;
-        current_player == 'X' ? current_player = 'O' : current_player = 'X';
+        current_player = (current_player == PLAYER_X) ? PLAYER_O : PLAYER_X;
     }
 }

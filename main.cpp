@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 
 char field[3][3];
 
@@ -22,11 +23,11 @@ void fill_field(){
 }
 
 void draw_field(){
-    std::cout << field[0][0] << " | " << field[1][0] << " | " << field[2][0] << std::endl;
+    std::cout << field[0][0] << " | " << field[0][1] << " | " << field[0][2] << std::endl;
     std::cout << "---------" << std::endl;
-    std::cout << field[0][1] << " | " << field[1][1] << " | " << field[2][1] << std::endl;
+    std::cout << field[1][0] << " | " << field[1][1] << " | " << field[1][2] << std::endl;
     std::cout << "---------" << std::endl;
-    std::cout << field[0][2] << " | " << field[1][2] << " | " << field[2][2] << std::endl;
+    std::cout << field[2][0] << " | " << field[2][1] << " | " << field[2][2] << std::endl;
 }
 
 bool check_vertical(char current_player){
@@ -65,6 +66,12 @@ bool move(char current_player){
     while (true){
         std::cout << current_player << " : " << "Enter your coordinates --> ";
         std::cin >> input.x >> input.y;
+
+        if (std::cin.fail()){
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input. Please enter numbers between 1 and 3." << std::endl;
+        }
 
         if (input.x > 3 || input.x < 1 || input.y > 3 || input.y < 1){
             std::cout << "You cannot select a cell which is beyond the field!" << std::endl;

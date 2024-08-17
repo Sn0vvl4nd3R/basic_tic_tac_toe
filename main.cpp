@@ -2,6 +2,10 @@
 
 char field[3][3];
 
+struct cell {
+    int x, y;
+};
+
 void game_loop();
 
 int main(void){
@@ -56,18 +60,18 @@ bool check_victory(char current_player){
 }
 
 bool move(char current_player){
-    int x, y;
+    cell input;
 
     while (true){
         std::cout << current_player << " : " << "Enter your coordinates --> ";
-        std::cin >> x >> y;
+        std::cin >> input.x >> input.y;
 
-        if (x > 3 || x < 1 || y > 3 || y < 1){
+        if (input.x > 3 || input.x < 1 || input.y > 3 || input.y < 1){
             std::cout << "You cannot select a cell which is beyond the field!" << std::endl;
-        } else if (field[x - 1][y - 1] == 'O' || field[x - 1][y - 1] == 'X'){
+        } else if (field[input.x - 1][input.y - 1] == 'O' || field[input.x - 1][input.y - 1] == 'X'){
             std::cout << "You cannot do that! This cell is occupied already!" << std::endl;
         } else {
-            field[x - 1][y - 1] = current_player;
+            field[input.x - 1][input.y - 1] = current_player;
             draw_field();
 
             if (check_victory(current_player)){

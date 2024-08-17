@@ -1,7 +1,9 @@
 #include <iostream>
 #include <limits>
 
-char field[3][3];
+#define SIZE 3
+
+char field[SIZE][SIZE];
 
 struct cell {
     int x, y;

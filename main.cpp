@@ -1,6 +1,6 @@
 #include <iostream>
 
-char field[9];
+char field[3][3];
 
 void game_loop();
 
@@ -12,21 +12,22 @@ int main(void){
 }
 
 void fill_field(){
-    for (int i = 0; i < 9; i++)
-        field[i] = '_';
+    for (int x = 0; x < 3; x++)
+        for (int y = 0; y < 3; y++)
+            field[x][y] = '.';
 }
 
 void draw_field(){
-    std::cout << field[0] << " | " << field[1] << " | " << field[2] << std::endl;
+    std::cout << field[0][0] << " | " << field[1][0] << " | " << field[2][0] << std::endl;
     std::cout << "---------" << std::endl;
-    std::cout << field[3] << " | " << field[4] << " | " << field[5] << std::endl;
+    std::cout << field[0][1] << " | " << field[1][1] << " | " << field[2][1] << std::endl;
     std::cout << "---------" << std::endl;
-    std::cout << field[6] << " | " << field[7] << " | " << field[8] << std::endl;
+    std::cout << field[0][2] << " | " << field[1][2] << " | " << field[2][2] << std::endl;
 }
 
 bool check_vertical(char current_player){
-    for (int i = 0; i != 3; i++){
-        if (field[i] == current_player && field[i + 3] == current_player && field[i + 6] == current_player)
+    for (int x = 0; x < 3; x++){
+        if (field[x][0] == current_player && field[x][1] == current_player && field[x][2] == current_player)
             return true;
     }
 
@@ -34,17 +35,17 @@ bool check_vertical(char current_player){
 }
 
 bool check_horizontal(char current_player){
-    for (int i = 0; i < 9; i = i + 3){
-        if (field[i] == current_player && field[i + 1] == current_player && field[i + 2] == current_player)
-            return true;
-    }
+    if ((field[0][0] == current_player && field[1][0] == current_player && field[2][0] == current_player) ||
+        (field[0][1] == current_player && field[1][1] == current_player && field[2][1] == current_player) ||
+        (field[0][2] == current_player && field[1][2] == current_player && field[2][2] == current_player))
+        return true;
 
     return false;
 }
 
 bool check_diagonal(char current_player){
-    if ((field[0] == current_player && field[4] == current_player && field[8] == current_player) ||
-    (field[2] == current_player && field[4] == current_player && field[6] == current_player))
+    if ((field[0][0] == current_player && field[1][1] == current_player && field[2][2] == current_player) ||
+        (field[2][0] == current_player && field[1][1] == current_player && field[0][2] == current_player))
         return true;
 
     return false;
@@ -55,18 +56,18 @@ bool check_victory(char current_player){
 }
 
 bool move(char current_player){
-    int cell;
+    int x, y;
 
     while (true){
-        std::cout << current_player << " : " << "Enter your cell --> ";
-        std::cin >> cell;
+        std::cout << current_player << " : " << "Enter your coordinates --> ";
+        std::cin >> x >> y;
 
-        if (cell > 9 || cell < 1){
+        if (x > 3 || x < 1 || y > 3 || y < 1){
             std::cout << "You cannot select a cell which is beyond the field!" << std::endl;
-        } else if (field[cell -1] == 'O' || field[cell - 1] == 'X'){
+        } else if (field[x - 1][y - 1] == 'O' || field[x - 1][y - 1] == 'X'){
             std::cout << "You cannot do that! This cell is occupied already!" << std::endl;
         } else {
-            field[cell - 1] = current_player;
+            field[x - 1][y - 1] = current_player;
             draw_field();
 
             if (check_victory(current_player)){

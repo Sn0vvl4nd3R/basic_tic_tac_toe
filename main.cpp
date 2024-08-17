@@ -6,11 +6,6 @@ void game_loop();
 
 int main(void){
 
-    //int game_mode;
-
-    //std::cout << "Choose the game mode (0 - two-player mode; 1 - single-player) --> ";
-    //std::cin >> game_mode;
-    
     game_loop();
 
     return 0;
@@ -75,7 +70,7 @@ bool move(char current_player){
             draw_field();
 
             if (check_victory(current_player)){
-                std::cout << current_player << " has won!" << std::endl;
+                std::cout << std::endl << current_player << " has won!" << std::endl;
                 return true;
             }
 
@@ -85,12 +80,16 @@ bool move(char current_player){
 }
 
 void game_loop(){
+    char current_player;
+
     fill_field();
 
+    current_player = 'X';
     while (true){
-        if (move('X'))
+        if (move(current_player))
             break;
-        else if (move('O'))
-            break;
+        std::cout << std::endl;
+
+        current_player == 'X' ? current_player = 'O' : current_player = 'X';
     }
 }

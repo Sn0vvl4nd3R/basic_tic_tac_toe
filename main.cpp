@@ -19,21 +19,24 @@ int main(void){
 }
 
 void fill_field(){
-    for (int x = 0; x < 3; x++)
-        for (int y = 0; y < 3; y++)
+    for (int x = 0; x < SIZE; x++)
+        for (int y = 0; y < SIZE; y++)
             field[x][y] = '.';
 }
 
 void draw_field(){
-    std::cout << field[0][0] << " | " << field[0][1] << " | " << field[0][2] << std::endl;
-    std::cout << "---------" << std::endl;
-    std::cout << field[1][0] << " | " << field[1][1] << " | " << field[1][2] << std::endl;
-    std::cout << "---------" << std::endl;
-    std::cout << field[2][0] << " | " << field[2][1] << " | " << field[2][2] << std::endl;
+    for (int i = 0; i < SIZE; i++){
+        for (int j = 0; j < SIZE; j++){
+            std::cout << field[i][j];
+            if (j < SIZE - 1) std::cout << " | ";
+        }
+        std::cout << std::endl;
+        if (i < SIZE - 1) std::cout << "-----------" << std::endl;
+    }
 }
 
 bool check_vertical(char current_player){
-    for (int x = 0; x < 3; x++){
+    for (int x = 0; x < SIZE; x++){
         if (field[x][0] == current_player && field[x][1] == current_player && field[x][2] == current_player)
             return true;
     }
@@ -42,10 +45,10 @@ bool check_vertical(char current_player){
 }
 
 bool check_horizontal(char current_player){
-    if ((field[0][0] == current_player && field[1][0] == current_player && field[2][0] == current_player) ||
-        (field[0][1] == current_player && field[1][1] == current_player && field[2][1] == current_player) ||
-        (field[0][2] == current_player && field[1][2] == current_player && field[2][2] == current_player))
-        return true;
+    for (int y = 0; y < SIZE; y++){
+        if (field[0][y] == current_player && field[1][y] == current_player && field[2][y] == current_player)
+            return true;
+    }
 
     return false;
 }
@@ -63,8 +66,8 @@ bool check_victory(char current_player){
 }
 
 bool is_draw(){
-    for (int x = 0; x < 3; x++){
-        for (int y = 0; y < 3; y++){
+    for (int x = 0; x < SIZE; x++){
+        for (int y = 0; y < SIZE; y++){
             if (field[x][y] == '.')
                 return false;
         }
@@ -86,10 +89,12 @@ bool move(char current_player){
             std::cout << "Invalid input. Please enter numbers between 1 and 3." << std::endl;
         }
 
-        if (input.x > 3 || input.x < 1 || input.y > 3 || input.y < 1){
+        if (input.x > SIZE || input.x <= 0 || input.y > SIZE || input.y <= 0){
             std::cout << "You cannot select a cell which is beyond the field!" << std::endl;
+            continue;
         } else if (field[input.x - 1][input.y - 1] == 'O' || field[input.x - 1][input.y - 1] == 'X'){
             std::cout << "You cannot do that! This cell is occupied already!" << std::endl;
+            continue;
         } else {
             field[input.x - 1][input.y - 1] = current_player;
             draw_field();
